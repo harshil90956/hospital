@@ -95,16 +95,3 @@ Harshil Dobariya [GitHub](https://github.com/harshil90956)
 
 For any questions or feedback, contact **Harshil Dobariya**: [LinkedIn](#)
 
-## License
-
-This project is licensed under the MIT License.
-
----
-
-⚡ **What changed:**
-
-1. Prescripto → Physio Connect.
-2. Focus on **physiotherapy** instead of hospital management.
-3. Features updated to reflect physiotherapy sessions, therapy plans, and communication.
-4. Simplified contributors/contact info for your project.
-
