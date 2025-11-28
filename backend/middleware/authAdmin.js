@@ -1,38 +1,40 @@
 import jwt from "jsonwebtoken";
-import adminModel from "../models/adminModel.js";   // <-- Import your Admin model
+import adminModel from "../models/adminModel.js";
 
-// admin authentication middleware
 const authAdmin = async (req, res, next) => {
     try {
-        // 1. Token from Authorization header
+        // Get token from Authorization header
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.json({ success: false, message: 'Not Authorized. Login again.' });
+            return res.status(401).json({ success: false, message: "Not Authorized. Login Again." });
         }
 
         const token = authHeader.split(" ")[1];
 
-        // 2. Verify token
+        // Decode token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // decoded = { id: "...", iat:..., exp:... }
+        // Token must contain admin email
+        const adminEmail = decoded.email;
 
-        // 3. Check admin in database
-        const admin = await adminModel.findById(decoded.id);
-
-        if (!admin) {
-            return res.json({ success: false, message: "Admin not found. Unauthorized." });
+        if (!adminEmail) {
+            return res.status(401).json({ success: false, message: "Invalid Token" });
         }
 
-        // 4. Attach admin to request
-        req.admin = admin;
+        // Find admin in DB by email
+        const admin = await adminModel.findOne({ email: adminEmail });
 
+        if (!admin) {
+            return res.status(401).json({ success: false, message: "Admin not found. Unauthorized." });
+        }
+
+        req.admin = admin; // stashing admin
         next();
 
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: "Invalid or expired token." });
+        res.status(401).json({ success: false, message: "Invalid or expired token." });
     }
 };
 
