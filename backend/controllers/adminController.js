@@ -57,8 +57,12 @@ const loginAdmin = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid credentials" });
     }
 
-    // generate token
- const token = jwt.sign(email + password, process.env.JWT_SECRET)
+    // generate proper token
+    const token = jwt.sign(
+      { email: admin.email },         // ✔ Email stored properly
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     res.json({
       success: true,
@@ -69,6 +73,7 @@ const loginAdmin = async (req, res) => {
         email: admin.email,
       },
     });
+
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: error.message });
